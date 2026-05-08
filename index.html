@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Veyya Operations Plan</title>
+<style>
+  :root {
+    color-scheme: light;
+    --sage: #6B7B3A; --sage-deep: #56652E; --coral: #C17B6B;
+    --charcoal: #34352C; --olive: #3D4A2F; --clay: #7A7A6E;
+    --ivory: #FAF8F4; --white: #FFFFFF; --beige: #E8E0D4;
+    --beige-deep: #D4CABA; --mint: #B8C9B0; --mint-soft: #D9E3D2;
+    --green: #4A7A3A; --amber: #C5912E; --red: #B5443A;
+    --shadow: 0 1px 2px rgba(52,53,44,0.06), 0 4px 14px rgba(52,53,44,0.05);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif; background: var(--ivory); color: var(--olive); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 28px 80px; }
+  header.hero { background: linear-gradient(135deg, #C8D5C0, #E8E0D4, #F5F0E8, #E8DCC8, #C8D5C0); border-radius: 14px; padding: 28px 32px; margin-bottom: 22px; box-shadow: var(--shadow); }
+  header.hero h1 { margin: 0 0 6px; font-size: 28px; color: var(--charcoal); letter-spacing: -0.01em; font-weight: 600; }
+  header.hero p.sub { margin: 0 0 18px; color: var(--olive); font-size: 14.5px; }
+  .countdowns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+  .cdcard { background: rgba(255,255,255,0.6); border: 1px solid rgba(52,53,44,0.08); border-radius: 10px; padding: 14px 16px; }
+  .cdcard .label { font-size: 11.5px; color: var(--clay); text-transform: uppercase; letter-spacing: 0.06em; }
+  .cdcard .date { font-size: 13.5px; color: var(--olive); margin-top: 2px; }
+  .cdcard .days { font-size: 26px; font-weight: 600; color: var(--sage-deep); margin-top: 2px; }
+  .cdcard .days span { font-size: 14px; color: var(--clay); font-weight: 400; margin-left: 4px; }
+  nav.tabs { display: flex; flex-wrap: wrap; gap: 4px; background: var(--white); border: 1px solid var(--beige); border-radius: 10px; padding: 6px; margin-bottom: 18px; box-shadow: var(--shadow); }
+  nav.tabs button { appearance: none; border: 0; background: transparent; color: var(--olive); font: inherit; font-size: 12.5px; padding: 8px 11px; border-radius: 7px; cursor: pointer; transition: all 0.15s ease; min-width: 80px; }
+  nav.tabs button:hover { background: var(--ivory); }
+  nav.tabs button.active { background: var(--sage); color: var(--ivory); }
+  section.tab { display: none; }
+  section.tab.active { display: block; animation: fadein 0.2s ease; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  h2 { color: var(--charcoal); font-size: 20px; font-weight: 600; margin: 4px 0 14px; letter-spacing: -0.005em; }
+  h3 { color: var(--charcoal); font-size: 15.5px; font-weight: 600; margin: 22px 0 10px; }
+  h4 { color: var(--charcoal); font-size: 13.5px; font-weight: 600; margin: 14px 0 6px; }
+  p { margin: 0 0 12px; }
+  .card { background: var(--white); border: 1px solid var(--beige); border-radius: 10px; padding: 18px 20px; margin-bottom: 14px; box-shadow: var(--shadow); }
+  .card.tight { padding: 14px 18px; }
+  .card.callout { border-left: 3px solid var(--coral); background: #FCF6F3; }
+  .card.note { background: var(--mint-soft); border: 1px solid var(--mint); }
+  .card.win { background: #EEF5E8; border: 1px solid var(--mint); border-left: 3px solid var(--green); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 800px) { .grid2, .grid3, .grid4 { grid-template-columns: 1fr; } .countdowns { grid-template-columns: 1fr; } }
+  .rag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; }
+  .rag.green { background: #E5F0DD; color: var(--green); }
+  .rag.amber { background: #F8EFD7; color: var(--amber); }
+  .rag.red { background: #F5DBD7; color: var(--red); }
+  .ws { background: var(--white); border: 1px solid var(--beige); border-radius: 10px; padding: 16px 18px; box-shadow: var(--shadow); }
+  .ws .head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .ws .head h4 { margin: 0; font-size: 15px; color: var(--charcoal); font-weight: 600; }
+  .ws .owner { font-size: 12px; color: var(--clay); margin-bottom: 10px; }
+  .ws ul { margin: 4px 0 0; padding: 0 0 0 18px; font-size: 13.5px; }
+  .ws ul li { margin-bottom: 4px; }
+  .ws .lbl { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--clay); margin-top: 12px; margin-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--beige); vertical-align: top; }
+  th { background: var(--ivory); font-weight: 600; color: var(--charcoal); font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.04em; }
+  tr:last-child td { border-bottom: 0; }
+  .sprint { display: grid; grid-template-columns: 110px 1fr; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--beige); }
+  .sprint:last-child { border-bottom: 0; }
+  .sprint .when { font-size: 12px; color: var(--clay); text-transform: uppercase; letter-spacing: 0.05em; padding-top: 2px; }
+  .sprint .when strong { display: block; color: var(--sage-deep); font-size: 13.5px; letter-spacing: 0; text-transform: none; font-weight: 600; }
+  .sprint .what { font-size: 13.5px; color: var(--olive); }
+  .sprint .what .hdr { font-weight: 600; color: var(--charcoal); margin-bottom: 4px; font-size: 14px; }
+  .sprint.launch { background: linear-gradient(90deg, rgba(193,123,107,0.08), transparent); border-radius: 8px; padding: 14px 12px; border-bottom: 1px solid var(--coral); }
+  .sprint.launch .when strong { color: var(--coral); }
+  .phases { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin: 8px 0 22px; }
+  .phase { border-radius: 8px; padding: 10px 12px; background: var(--ivory); border: 1px solid var(--beige); font-size: 12px; }
+  .phase strong { display: block; color: var(--charcoal); font-size: 12.5px; margin-bottom: 4px; }
+  .phase .pdate { color: var(--clay); }
+  .phase.now { background: var(--sage); color: var(--ivory); border-color: var(--sage-deep); }
+  .phase.now strong, .phase.now .pdate { color: var(--ivory); }
+  @media (max-width: 800px) { .phases { grid-template-columns: 1fr 1fr; } }
+  .kpi { background: var(--white); border: 1px solid var(--beige); border-radius: 10px; padding: 14px; text-align: center; }
+  .kpi .num { font-size: 22px; color: var(--sage-deep); font-weight: 600; }
+  .kpi .lab { font-size: 12px; color: var(--clay); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .kpi .when { font-size: 11px; color: var(--clay); margin-top: 2px; }
+  .pill { background: var(--ivory); border: 1px solid var(--beige); color: var(--olive); padding: 3px 10px; border-radius: 999px; font-size: 12px; }
+  .pill.done { background: #EEF5E8; border-color: var(--mint); color: var(--green); }
+  .rule { border-left: 3px solid var(--sage); padding: 10px 14px; background: var(--ivory); margin: 10px 0; border-radius: 0 6px 6px 0; font-size: 13.5px; }
+  footer.foot { margin-top: 24px; text-align: center; color: var(--clay); font-size: 12px; }
+  .src { color: var(--clay); font-size: 12px; }
+  .src a { color: var(--sage-deep); }
+  .blockers { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .blocker { display: grid; grid-template-columns: 22px 1fr 100px; gap: 10px; padding: 10px 12px; background: #FBF4F2; border: 1px solid #ECCDC4; border-radius: 8px; align-items: start; font-size: 13.5px; }
+  .blocker .num { font-weight: 700; color: var(--red); }
+  .blocker .who { font-size: 12px; color: var(--clay); text-align: right; }
+  .blocker .who strong { color: var(--charcoal); }
+  .heat td.high { background: #F5DBD7; }
+  .heat td.med { background: #F8EFD7; }
+  .heat td.low { background: #E5F0DD; }
+  .changeline { font-size: 12px; color: var(--clay); margin-bottom: 8px; }
+  .changeline span.tag { background: #EEF5E8; color: var(--green); padding: 1px 8px; border-radius: 999px; margin-right: 6px; font-weight: 600; font-size: 11px; }
+  .principle { background: var(--ivory); border: 1px solid var(--beige); border-radius: 10px; padding: 14px 16px; }
+  .principle .n { color: var(--coral); font-weight: 700; font-size: 22px; line-height: 1; }
+  .principle h4 { margin: 8px 0 4px; }
+  .principle p { font-size: 13px; margin: 0; }
+  .cat { border: 1px solid var(--beige); border-radius: 10px; padding: 14px 16px; background: var(--white); }
+  .cat .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .cat h4 { margin: 0; }
+  .cat .count { font-size: 12px; color: var(--coral); font-weight: 600; }
+  .cat ul { margin: 6px 0 0; padding-left: 18px; font-size: 13px; color: var(--olive); }
+  .cat ul li { margin-bottom: 3px; }
+  .tier { background: var(--white); border: 1px solid var(--beige); border-radius: 10px; padding: 18px 20px; }
+  .tier.recommended { border: 2px solid var(--sage); position: relative; }
+  .tier.recommended::before { content: "RECOMMENDED"; position: absolute; top: -10px; left: 16px; background: var(--sage); color: var(--ivory); font-size: 10px; padding: 3px 10px; border-radius: 999px; letter-spacing: 0.08em; font-weight: 600; }
+  .tier h4 { margin: 0 0 4px; font-size: 16px; }
+  .tier .price { font-size: 22px; color: var(--sage-deep); font-weight: 700; margin-bottom: 6px; }
+  .tier .price small { font-size: 12px; color: var(--clay); font-weight: 400; margin-left: 4px; }
+  .tier ul { margin: 8px 0 0; padding-left: 18px; font-size: 13px; }
+  .tier ul li { margin-bottom: 4px; }
+  .tier .verdict { background: var(--ivory); border-radius: 6px; padding: 8px 10px; margin-top: 12px; font-size: 12.5px; color: var(--olive); }
+  .channel { background: var(--white); border: 1px solid var(--beige); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
+  .channel .ch-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .channel h4 { margin: 0; font-size: 14px; }
+  .channel .target { font-size: 12px; color: var(--coral); font-weight: 600; }
+  .channel ul { margin: 6px 0 0; padding-left: 18px; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>Veyya - Operations Plan</h1>
+  <p class="sub">From today through the Month 6 City 2 gate. Aligned to: <strong>web Jul 1, 2026</strong> · <strong>mobile + full launch Q3 (Sep 1)</strong> · <strong>City 2 gate Jan 1, 2027</strong>.</p>
+  <div class="changeline"><span class="tag">SHAREABLE COPY</span>This is the shareable export. Live version refreshes in the Cowork sidebar. All five GTM plans included.</div>
+  <div class="countdowns">
+    <div class="cdcard"><div class="label">Web Launch</div><div class="date">Wed, Jul 1, 2026</div><div class="days" id="cd-web">- <span>days</span></div></div>
+    <div class="cdcard"><div class="label">Mobile + Full Launch</div><div class="date">Tue, Sep 1, 2026</div><div class="days" id="cd-mob">- <span>days</span></div></div>
+    <div class="cdcard"><div class="label">City 2 Gate</div><div class="date">Fri, Jan 1, 2027</div><div class="days" id="cd-c2">- <span>days</span></div></div>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button class="tabbtn active" data-tab="overview">Overview</button>
+  <button class="tabbtn" data-tab="path">Critical Path</button>
+  <button class="tabbtn" data-tab="ws">Workstreams</button>
+  <button class="tabbtn" data-tab="sprint">Sprint Plan</button>
+  <button class="tabbtn" data-tab="kpi">KPIs</button>
+  <button class="tabbtn" data-tab="risks">Risks</button>
+  <button class="tabbtn" data-tab="photo">Photography</button>
+  <button class="tabbtn" data-tab="provider-acq">Provider Acq</button>
+  <button class="tabbtn" data-tab="customer-acq">Customer Acq</button>
+  <button class="tabbtn" data-tab="marketing">Marketing</button>
+  <button class="tabbtn" data-tab="social">Social</button>
+  <button class="tabbtn" data-tab="city2">City 2 Gate</button>
+  <button class="tabbtn" data-tab="cadence">Cadence</button>
+</nav>
+
+<section class="tab active" data-tab="overview">
+  <div class="card win">
+    <h2 style="margin-top:0">Where we stand</h2>
+    <ul style="margin:0; padding-left: 20px;">
+      <li><strong>Thai company registered</strong> - downstream sequence (Omise live, DOPA, bank, VAT, insurance, T&Cs) now in flight.</li>
+      <li><strong>Co-founders Sindhu + Alex; Moom is regional partner for Thailand market.</strong></li>
+      <li><strong>Engineering:</strong> 9 microservices, 507 endpoints, 1,942 tests, 131 DB models, 147 docs - core build largely done.</li>
+      <li><strong>Block:</strong> deployment + design + supply (50 providers by Jun 30) + photography + marketing execution.</li>
+    </ul>
+  </div>
+
+  <h3>Workstream RAG</h3>
+  <div class="grid2">
+    <div class="ws"><div class="head"><h4>Tech & Product</h4><span class="rag amber">Amber</span></div><div class="owner">Owner: Sindhu · Build: Ankit · Design: Nilo</div><div class="lbl">Worry</div><ul><li>GCP billing not activated</li><li>Nilo design pass not done on customer + provider apps</li></ul></div>
+    <div class="ws"><div class="head"><h4>Supply (Providers)</h4><span class="rag red">Red</span></div><div class="owner">Owner: Moom · with Alex on partnerships</div><div class="lbl">Worry</div><ul><li>50-provider target with funnel not yet proven</li><li>Modules 2-5 still in production sprint (~125 hrs left)</li></ul></div>
+    <div class="ws"><div class="head"><h4>Demand (Customers)</h4><span class="rag amber">Amber</span></div><div class="owner">Owner: Alex · with Sindhu on narrative</div><div class="lbl">Status</div><ul><li>Channels mapped (Customer Acq tab) - need execution</li><li>Photography + influencer slate next 2 weeks</li></ul></div>
+    <div class="ws"><div class="head"><h4>Operations</h4><span class="rag amber">Amber</span></div><div class="owner">Owner: Moom</div><div class="lbl">Worry</div><ul><li>SLAs, escalation, weekend coverage all informal</li></ul></div>
+    <div class="ws"><div class="head"><h4>Finance & Unit Econ</h4><span class="rag amber">Amber</span></div><div class="owner">Owner: Sindhu</div><div class="lbl">Worry</div><ul><li>55 services unpriced</li><li>Six-month P&L with sensitivity not yet stress-tested</li></ul></div>
+    <div class="ws"><div class="head"><h4>Legal & Entity</h4><span class="rag green">Green</span></div><div class="owner">Owner: Alex · with Sindhu on tax · Moom on local filings</div><div class="lbl">Status</div><ul><li><strong>Thai company REGISTERED</strong></li><li>Downstream sequence in flight</li></ul></div>
+    <div class="ws"><div class="head"><h4>Brand & Comms</h4><span class="rag amber">Amber</span></div><div class="owner">Owner: Alex · with Sindhu on narrative</div><div class="lbl">Status</div><ul><li>Brand kit done · Photography brief locked</li><li>Marketing site copy, PR concept, founder narrative pending</li></ul></div>
+    <div class="ws"><div class="head"><h4>Veyya Academy</h4><span class="rag amber">Amber</span></div><div class="owner">Owner: Moom · Academy Lead role TBH</div><div class="lbl">Worry</div><ul><li>Modules 2-5 + 3 category modules: 125+ hrs left</li><li>Academy Lead role unhired</li></ul></div>
+  </div>
+
+  <h3>Top blockers, this week</h3>
+  <div class="blockers">
+    <div class="blocker"><div class="num">1</div><div><strong>GCP billing activation</strong> - blocks all infra deploy.</div><div class="who">Owner<br><strong>Ankit</strong><br>By Apr 30</div></div>
+    <div class="blocker"><div class="num">2</div><div><strong>Nilo design contract + scope</strong> - 93 customer + 90 provider screens scaffolded.</div><div class="who">Owner<br><strong>Sindhu</strong><br>By Apr 30</div></div>
+    <div class="blocker"><div class="num">3</div><div><strong>Provider recruit pipeline 1.0</strong> - 200-prospect funnel for 50 active by Jun 30.</div><div class="who">Owner<br><strong>Moom</strong><br>By May 3</div></div>
+    <div class="blocker"><div class="num">4</div><div><strong>Pricing finalized for 55 services</strong> - blocks marketing copy, app catalog, AOV modeling.</div><div class="who">Owner<br><strong>Sindhu + Alex</strong><br>By May 3</div></div>
+    <div class="blocker"><div class="num">5</div><div><strong>Thai entity downstream sequence</strong> - Omise live, bank, DOPA, VAT, insurance.</div><div class="who">Owner<br><strong>Alex (with Moom)</strong><br>By May 10</div></div>
+    <div class="blocker"><div class="num">6</div><div><strong>Photographer signed + shoot 1 booked</strong> - shortlist 3, sign May 1, first shoot May 11.</div><div class="who">Owner<br><strong>Alex</strong><br>By May 1</div></div>
+    <div class="blocker"><div class="num">7</div><div><strong>Influencer slate signed (3 macro + 8 micro)</strong> - outreach this week.</div><div class="who">Owner<br><strong>Alex</strong><br>By May 17</div></div>
+    <div class="blocker"><div class="num">8</div><div><strong>Social media manager hired</strong> - freelance, 10 hrs/wk, onboarded before May 18 cohort 1.</div><div class="who">Owner<br><strong>Alex</strong><br>By May 10</div></div>
+  </div>
+</section>
+
+<section class="tab" data-tab="path">
+  <h2>Critical path - 6 phases</h2>
+  <div class="phases">
+    <div class="phase now"><strong>1 · Unblock</strong><div class="pdate">Apr 25 - May 17</div></div>
+    <div class="phase"><strong>2 · Build & Beta</strong><div class="pdate">May 18 - Jun 28</div></div>
+    <div class="phase"><strong>3 · Web Launch</strong><div class="pdate">Jun 29 - Jul 12</div></div>
+    <div class="phase"><strong>4 · Stabilize</strong><div class="pdate">Jul 13 - Aug 31</div></div>
+    <div class="phase"><strong>5 · Mobile + Scale</strong><div class="pdate">Sep 1 - Dec 31</div></div>
+    <div class="phase"><strong>6 · City 2 Gate</strong><div class="pdate">Jan 1 - Jan 15, 2027</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3 style="margin-top:0">Phase 1 · Unblock</h3><p><strong>Theme:</strong> remove every blocker. Foundation only.</p><p><strong>Exit:</strong></p><ul><li>GCP billing on, infra deployed</li><li>Thai entity downstream complete</li><li>Nilo design pass complete</li><li>Pricing finalized · 200 services</li><li>50 providers in Academy pipeline</li><li>Photography first shoot complete</li><li>Influencer slate signed · social manager hired</li></ul></div>
+    <div class="card"><h3 style="margin-top:0">Phase 2 · Build & Beta</h3><p><strong>Theme:</strong> end-to-end real bookings. Marketing engine spinning up.</p><p><strong>Exit:</strong></p><ul><li>Cohort 1 (50) · Cohort 2 (100) shipped</li><li>50 providers Blue Badge active</li><li>Pre-launch waitlist 500+</li><li>Insurance bound · T&Cs final · marketing site public Jun 1</li><li>Photography library complete · social channels populated</li><li>Code freeze Fri Jun 26</li></ul></div>
+    <div class="card"><h3 style="margin-top:0">Phase 3 · Web Launch</h3><p><strong>Theme:</strong> Tue Jul 1 public launch. War-room. 24/7 ops cover first 7 days.</p><p><strong>Exit:</strong></p><ul><li>500+ signups week 1</li><li>NPS ≥ 40</li><li>No P0/P1 unresolved &gt; 4hrs</li></ul></div>
+    <div class="card"><h3 style="margin-top:0">Phase 4 · Stabilize</h3><p><strong>Theme:</strong> 200+ active providers, 1,000+ active customers. Mobile QA + App Store submit.</p><p><strong>Exit:</strong></p><ul><li>iOS + Android approved & live</li><li>Mid-month retention ≥ 35%</li><li>Take rate stabilized 20%+</li></ul></div>
+    <div class="card"><h3 style="margin-top:0">Phase 5 · Mobile + Scale</h3><p><strong>Theme:</strong> Sep 1 mobile launch. Phase 2 categories. Brand partnerships. City 2 due diligence.</p><p><strong>Exit (entering gate):</strong></p><ul><li>5,000+ active customers, 150+ active providers</li><li>Premium Badge live · 3 brand partnerships active</li><li>Bangkok unit-positive city P&L</li></ul></div>
+    <div class="card"><h3 style="margin-top:0">Phase 6 · City 2 Gate</h3><p><strong>Theme:</strong> go / no-go on City 2 with full board pack.</p><p><strong>Exit:</strong></p><ul><li>Decision packet · 3 candidate cities</li><li>Capital plan & runway impact modeled</li><li>City 2 entity scoped · launch readiness team formed for Q2 2027 if Go</li></ul></div>
+  </div>
+</section>
+
+<section class="tab" data-tab="ws">
+  <h2>Workstreams - in detail</h2>
+  <p class="src">Owners: Sindhu (co-founder, Tech / Finance / Product) · Alex (co-founder, GTM / Strategy / Brand) · Moom (regional partner, Thailand market - Operations / Academy / Compliance).</p>
+  <div class="card"><h3 style="margin-top:0">Tech & Product <span class="rag amber">Amber</span></h3>
+    <h4>Done</h4><ul><li>9 microservices · 507 endpoints · 1,942 tests</li><li>SmartMatch v2.0 · Real Omise · Appman eKYC + background checks</li><li>WebSocket gateway · in-app chat · AI search</li><li>Multi-language Thai/English · 192 security issues fixed</li></ul>
+    <h4>Critical to clear</h4><ul><li>GCP billing activation (Apr 30)</li><li>Firebase Blaze · ThaiBulkSMS API keys</li><li>Nilo full design pass (target May 17)</li><li>App Store + Google Play submission (target Aug 15)</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Operations <span class="rag amber">Amber</span></h3>
+    <h4>SLAs to formalize</h4><ul><li>First-response on inbound: ≤ 5 min (8am-10pm BKK)</li><li>Provider acceptance: ≤ 15 min · arrival: ±10 min</li><li>No-show: customer credit ≤ 30 min</li><li>Refund window: 72 hours</li><li>Weekend coverage: 2-on-1-off founder rotation, first 90 days</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Finance & Unit Economics <span class="rag amber">Amber</span></h3>
+    <h4>Pre-launch</h4><ul><li>Pricing locked for all 200 services</li><li>Six-month P&L with sensitivity</li><li>Concierge revenue / cost reconciled</li><li>T+2 weekly payouts · 2% GMV reserve</li><li>Bank account opened</li></ul>
+    <h4>North-star unit econ</h4><ul><li>AOV ฿1,300 · Take rate 22% · Contribution ~฿286</li><li>CAC blended ≤ ฿200 · Payback 3-month</li><li>Provider gross monthly ฿45-65k</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Legal & Entity <span class="rag green">Green</span></h3>
+    <h4>Done</h4><ul><li><span class="pill done">DONE</span> Thai company registered</li><li>Provider Master Agreement v1 + 16 compliance docs</li></ul>
+    <h4>This week</h4><ul><li>Omise live keys · DOPA filing · bank account · VAT</li><li>Insurance: 3 quotes by May 10, bound by Jun 15</li><li>Customer T&Cs to Thai counsel</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Brand, Comms & Marketing <span class="rag amber">Amber</span></h3>
+    <p>Detailed plans: <strong>Marketing tab</strong> · supporting tabs: <strong>Photography · Customer Acq · Social</strong>.</p></div>
+  <div class="card"><h3 style="margin-top:0">Veyya Academy <span class="rag amber">Amber</span></h3>
+    <h4>Status</h4><ul><li>Module 1 production guide complete</li><li>Modules 2-5 + 3 category modules - 125+ hrs left</li><li>Quiz bank: ~120 needed · ~50 written</li></ul>
+    <h4>Hires</h4><ul><li>ASAP: Academy Lead</li><li>Month 3: Coordinator · Month 4: Partnership Mgr · Month 6: Quality Reviewer</li></ul></div>
+</section>
+
+<section class="tab" data-tab="sprint">
+  <h2>Sprint plan - 10 weeks to web launch</h2>
+  <div class="card">
+    <div class="sprint"><div class="when"><strong>Week -9</strong>Apr 27 - May 3</div><div class="what"><div class="hdr">Unblock</div>GCP billing on. Omise live keys submitted. Bank opened. DOPA filed. T&Cs to lawyer. Insurance RFQ. Nilo SOW signed. Pricing workshop. Photographer signed (May 1). Provider funnel doc'd. Influencer outreach begins.</div></div>
+    <div class="sprint"><div class="when"><strong>Week -8</strong>May 4 - May 10</div><div class="what"><div class="hdr">Foundation</div>Cloud SQL/Redis/Run live. 9 services to staging. 30 providers in Academy. Pricing locked: Beauty/Wellness/Home. Insurance shortlist. Module 2 done. Talent + locations confirmed. Social media manager hired.</div></div>
+    <div class="sprint"><div class="when"><strong>Week -7</strong>May 11 - May 17</div><div class="what"><div class="hdr">Designs done · Shoot 1</div>Nilo customer + provider UI passes complete. Module 3 done. 45 providers in Academy. Influencer slate signed. End-to-end booking with Omise sandbox. Photography shoot day 1.</div></div>
+    <div class="sprint"><div class="when"><strong>Week -6</strong>May 18 - May 24</div><div class="what"><div class="hdr">End-to-end test · Shoot 2</div>Full dev env live. First real booking through Omise live. 50 providers Blue Badge ready. Pricing locked all 200. T&Cs back. Photography shoot day 2.</div></div>
+    <div class="sprint"><div class="when"><strong>Week -5</strong>May 25 - May 31</div><div class="what"><div class="hdr">Beta cohort 1 · Shoot 3</div>50 friends & family customers, 5 zones. Refund + dispute + payout flow exercised. Insurance bound. T&Cs final. Module 4 + 5. Photography shoot day 3.</div></div>
+    <div class="sprint"><div class="when"><strong>Week -4</strong>Jun 1 - Jun 7</div><div class="what"><div class="hdr">Marketing public · Library delivered</div>Marketing site public. Pre-launch waitlist live. Influencer announcements. Customer support live. Press embargo briefings. Photography library delivered. Social channels seeded.</div></div>
+    <div class="sprint"><div class="when"><strong>Week -3</strong>Jun 8 - Jun 14</div><div class="what"><div class="hdr">Beta cohort 2 (100)</div>Extended beta. Bug bash. Daily ops huddles begin. City 2 lite due diligence kickoff.</div></div>
+    <div class="sprint"><div class="when"><strong>Week -2</strong>Jun 15 - Jun 21</div><div class="what"><div class="hdr">Hardening</div>Final QA. Load test. Press kit final. Launch event invitations.</div></div>
+    <div class="sprint"><div class="when"><strong>Week -1</strong>Jun 22 - Jun 28</div><div class="what"><div class="hdr">Launch prep</div>Code freeze Fri Jun 26. Final dry run weekend.</div></div>
+    <div class="sprint launch"><div class="when"><strong>Week 0</strong>Jun 29 - Jul 5</div><div class="what"><div class="hdr">PUBLIC WEB LAUNCH - Tue Jul 1</div>Press 9am BKK. Launch event evening. 24/7 founder ops cover.</div></div>
+    <div class="sprint"><div class="when"><strong>Jul 6 - Jul 19</strong></div><div class="what"><div class="hdr">Stabilize web</div>Watch retention cohort 0. Daily KPI scorecard. P0/P1 SLA: 4 hrs.</div></div>
+    <div class="sprint"><div class="when"><strong>Jul 20 - Aug 16</strong></div><div class="what"><div class="hdr">Mobile QA + App Store prep</div>Submit Apple Aug 8, Google Aug 12.</div></div>
+    <div class="sprint"><div class="when"><strong>Aug 17 - Aug 31</strong></div><div class="what"><div class="hdr">Soft launch prep</div>Push notifications. Mobile-only promo.</div></div>
+    <div class="sprint launch"><div class="when"><strong>Sep 1</strong></div><div class="what"><div class="hdr">MOBILE + FULL LAUNCH</div>iOS + Android live. PR push + influencer surge.</div></div>
+    <div class="sprint"><div class="when"><strong>Sep 2 - Oct 31</strong></div><div class="what"><div class="hdr">Phase 2 categories</div>Skincare, nail art, lash, bridal, fitness, nutrition, handyman, home org. Premium Badge live. First brand partnerships.</div></div>
+    <div class="sprint"><div class="when"><strong>Nov 1 - Dec 31</strong></div><div class="what"><div class="hdr">Scale + city-2 due diligence</div>5,000+ customers, 150+ providers. City 2 ops playbook. Phuket / Chiang Mai / Dubai DD visits.</div></div>
+    <div class="sprint launch"><div class="when"><strong>Jan 2027</strong></div><div class="what"><div class="hdr">CITY 2 GATE</div>Decision packet to advisors. Go / no-go.</div></div>
+  </div>
+</section>
+
+<section class="tab" data-tab="kpi">
+  <h2>KPIs</h2>
+  <h3>Launch readiness (by Jun 30)</h3>
+  <div class="grid4"><div class="kpi"><div class="num">50</div><div class="lab">Active providers</div><div class="when">Blue Badge, 5 zones</div></div><div class="kpi"><div class="num">100</div><div class="lab">Beta customers</div><div class="when">Cohort 1 + 2</div></div><div class="kpi"><div class="num">500</div><div class="lab">Pre-launch waitlist</div><div class="when">By Jun 28</div></div><div class="kpi"><div class="num">200</div><div class="lab">Bookings completed</div><div class="when">Beta total</div></div></div>
+  <h3>Month 1 post launch (July)</h3>
+  <div class="grid4"><div class="kpi"><div class="num">927</div><div class="lab">Customer signups</div></div><div class="kpi"><div class="num">297</div><div class="lab">Active customers</div></div><div class="kpi"><div class="num">100</div><div class="lab">Provider signups</div></div><div class="kpi"><div class="num">฿1,300</div><div class="lab">AOV</div></div></div>
+  <h3>Month 2-3 (Aug-Sep)</h3>
+  <div class="grid4"><div class="kpi"><div class="num">2,500</div><div class="lab">Active customers</div></div><div class="kpi"><div class="num">80</div><div class="lab">Active providers</div></div><div class="kpi"><div class="num">22%</div><div class="lab">Take rate</div></div><div class="kpi"><div class="num">35%+</div><div class="lab">M1 retention</div></div></div>
+  <h3>Month 4-6 (Oct-Dec)</h3>
+  <div class="grid4"><div class="kpi"><div class="num">5,000+</div><div class="lab">Active customers</div></div><div class="kpi"><div class="num">150+</div><div class="lab">Active providers</div></div><div class="kpi"><div class="num">3</div><div class="lab">Brand partnerships</div></div><div class="kpi"><div class="num">100%</div><div class="lab">Phase 2 categories</div></div></div>
+  <h3>Quality KPIs (always-on)</h3>
+  <div class="card tight"><table><thead><tr><th>Metric</th><th>Soft launch (Jul)</th><th>Mobile launch (Sep)</th><th>City 2 gate (Jan)</th></tr></thead>
+  <tbody><tr><td>Provider on-time rate</td><td>90%</td><td>92%</td><td>93%+</td></tr><tr><td>Provider no-show rate</td><td>≤2%</td><td>≤1.5%</td><td>≤1%</td></tr><tr><td>Avg provider rating</td><td>4.4+</td><td>4.5+</td><td>4.7+</td></tr><tr><td>Provider monthly churn</td><td>&lt;15%</td><td>&lt;10%</td><td>&lt;8%</td></tr><tr><td>Onboarding completion</td><td>70%</td><td>75%</td><td>80%+</td></tr><tr><td>First-attempt Blue Badge pass</td><td>70%</td><td>72%</td><td>75%+</td></tr><tr><td>Customer NPS</td><td>≥40</td><td>≥45</td><td>≥50</td></tr><tr><td>P0/P1 incidents per month</td><td>≤3</td><td>≤1</td><td>0</td></tr></tbody></table></div>
+</section>
+
+<section class="tab" data-tab="risks">
+  <h2>Risk register - top 12</h2>
+  <div class="card tight">
+    <table class="heat"><thead><tr><th>#</th><th>Risk</th><th>L</th><th>I</th><th>Mitigation</th><th>Owner</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>GCP billing delay slips infra deploy 2+ weeks</td><td class="high">High</td><td class="high">Critical</td><td>Backup card. Escalate to Google. Local-only dev as parallel.</td><td>Ankit</td></tr>
+      <tr><td>2</td><td>Omise live keys delayed beyond May 31</td><td class="med">Medium</td><td class="high">High</td><td>File Apr 30. Backup: 2C2P or Stripe Atlas.</td><td>Alex</td></tr>
+      <tr><td>3</td><td>Provider recruit short of 50 by Jun 30</td><td class="high">High</td><td class="high">High</td><td>Triple pipeline (200). Fallback: launch with 30 in 3 zones.</td><td>Moom</td></tr>
+      <tr><td>4</td><td>Nilo design capacity slip</td><td class="high">High</td><td class="high">High</td><td>Lock Tue review. Customer-flow-first. Backup agency.</td><td>Sindhu</td></tr>
+      <tr><td>5</td><td>Customer T&Cs review takes 6+ weeks</td><td class="med">Medium</td><td class="high">High</td><td>Brief by May 1. Pre-write redlines.</td><td>Alex</td></tr>
+      <tr><td>6</td><td>Concierge SLAs slip during 100-customer beta</td><td class="med">Medium</td><td class="high">High</td><td>Document SOPs by May 18. Founder rotation.</td><td>Moom</td></tr>
+      <tr><td>7</td><td>CAC blows past ฿200 in Month 1</td><td class="med">Medium</td><td class="med">Medium</td><td>Influencer + WoM heavy. Kill paid > ฿300.</td><td>Alex</td></tr>
+      <tr><td>8</td><td>Provider monthly churn &gt; 15%</td><td class="med">Medium</td><td class="high">High</td><td>Day 14 + 30 check-ins. T+2 payouts.</td><td>Moom</td></tr>
+      <tr><td>9</td><td>Payment dispute rate &gt; 1.5%</td><td class="low">Low</td><td class="high">High</td><td>2% GMV reserve. 72h dispute window.</td><td>Sindhu</td></tr>
+      <tr><td>10</td><td>App Store rejection on iOS</td><td class="med">Medium</td><td class="med">Medium</td><td>Pre-review consultant Aug 1.</td><td>Ankit</td></tr>
+      <tr><td>11</td><td>Photography misses for site / app launch</td><td class="med">Medium</td><td class="high">High</td><td>3 shoot days locked. Photographer signed May 1.</td><td>Alex</td></tr>
+      <tr><td>12</td><td>Competitor launches Bangkok push</td><td class="med">Medium</td><td class="med">Medium</td><td>Lean on Veyya Way + Academy moat.</td><td>Alex</td></tr>
+    </tbody></table>
+  </div>
+</section>
+
+<section class="tab" data-tab="photo">
+  <h2>Photography</h2>
+  <p>~200 final selects, delivered <strong>Jun 1</strong>. Powers marketing site, app store, social, provider profiles, press kit.</p>
+  <div class="card">
+    <h3 style="margin-top:0">Three guiding principles</h3>
+    <div class="grid3" style="gap:10px;">
+      <div class="principle"><div class="n">1</div><h4>Real people, real services</h4><p>No models pretending. Real providers, real customers. "Elevated everyday."</p></div>
+      <div class="principle"><div class="n">2</div><h4>Bangkok on display</h4><p>The city's texture - architecture, neighborhoods, light through Sukhumvit windows.</p></div>
+      <div class="principle"><div class="n">3</div><h4>Care made visible</h4><p>The touch, the focus, the smile. Service moments that read as care.</p></div>
+    </div>
+  </div>
+  <h3>Asset categories - 200 selects</h3>
+  <div class="grid2">
+    <div class="cat"><div class="top"><h4>A · Provider portraits</h4><span class="count">~45</span></div><ul><li>Environmental in workspace</li><li>Tight portrait, soft smile</li><li>Action mid-service</li></ul></div>
+    <div class="cat"><div class="top"><h4>B · Service in-action</h4><span class="count">~60</span></div><ul><li>Beauty 18 · Wellness 18 · Home 24</li></ul></div>
+    <div class="cat"><div class="top"><h4>C · Brand atmospherics</h4><span class="count">~30</span></div><ul><li>Hands, products, brushes</li><li>Bangkok light, texture</li></ul></div>
+    <div class="cat"><div class="top"><h4>D · App in context</h4><span class="count">~25</span></div><ul><li>Phone in customer's hand</li><li>Provider app · notifications</li></ul></div>
+    <div class="cat"><div class="top"><h4>E · Founder + team</h4><span class="count">~20</span></div><ul><li>Sindhu solo · Alex solo · duo · Moom</li><li>Press headshots</li></ul></div>
+    <div class="cat"><div class="top"><h4>F · Customer journey</h4><span class="count">~20</span></div><ul><li>Booking · arrival · service · completion</li></ul></div>
+  </div>
+  <h3>Three budget tiers - pick one</h3>
+  <div class="grid3">
+    <div class="tier"><h4>Lean</h4><div class="price">฿250-300k <small>~$7-9k</small></div><ul><li>2 days · 1 photographer + 1 assistant</li><li>Founder-led direction · real providers as talent</li><li><strong>~120 assets</strong></li></ul><div class="verdict">Risks scrappy vibes. Ok if cash is hard constraint.</div></div>
+    <div class="tier recommended"><h4>Mid</h4><div class="price">฿600-800k <small>~$18-24k</small></div><ul><li>3 days · photographer + assistant + stylist + creative direction</li><li>5 paid talent · 4 paid locations</li><li>Dedicated editor + color</li><li><strong>~200 assets</strong></li></ul><div class="verdict">The right call. Density without over-investing pre-launch.</div></div>
+    <div class="tier"><h4>Premium</h4><div class="price">฿1.4-1.7m <small>~$42-50k</small></div><ul><li>4 days + BTS video</li><li>Creative director + producer + makeup</li><li>12 talent · 6-8 premium locations</li><li><strong>~300 assets + 8-12 video edits</strong></li></ul><div class="verdict">Save for post-Sep refresh.</div></div>
+  </div>
+  <h3>Path to first shoot (Apr 27 - May 11)</h3>
+  <div class="card tight"><ul><li><strong>Tue Apr 28:</strong> 5 portfolio reviews → 3</li><li><strong>Wed-Thu:</strong> creative interviews</li><li><strong>Fri May 1:</strong> Sign one. Lock first shoot day May 11.</li><li><strong>May 4-10:</strong> Talent + locations + wardrobe + props</li><li><strong>Mon May 11:</strong> Shoot day 1 (provider portraits + Wellness)</li></ul></div>
+</section>
+
+<section class="tab" data-tab="provider-acq">
+  <h2>Provider acquisition plan</h2>
+  <p class="src">Owner: Moom · Goal: 50 active Blue Badge providers across 5 zones by Jun 30.</p>
+  <div class="card"><h3 style="margin-top:0">Funnel math</h3>
+    <table><thead><tr><th>Stage</th><th>Target</th><th>Conv.</th></tr></thead>
+    <tbody><tr><td>Top of funnel · prospects</td><td>200</td><td>-</td></tr><tr><td>Application submitted</td><td>120</td><td>60%</td></tr><tr><td>Background check pass</td><td>90</td><td>75%</td></tr><tr><td>Academy enrolled</td><td>75</td><td>83%</td></tr><tr><td>Blue Badge certified</td><td>60</td><td>80%</td></tr><tr><td>Active in 14 days</td><td>50</td><td>83%</td></tr></tbody></table></div>
+  <h3>Channel mix - 200 prospects</h3>
+  <div class="channel"><div class="ch-head"><h4>1. Salons / spas / studios</h4><span class="target">60</span></div><ul><li>Approach 30 known Bangkok establishments</li><li>Targets: Tony & Guy, Cher Pole, Akaliko, Vikasa, local Thai-owned salons in 5 zones</li><li>In-person + LINE follow-up. Pitch: extra income, no exclusivity.</li></ul></div>
+  <div class="channel"><div class="ch-head"><h4>2. Independent practitioners</h4><span class="target">50</span></div><ul><li>LINE community groups · Facebook groups (Thai practitioner networks)</li><li>Direct LINE outreach · WhatsApp follow-up</li></ul></div>
+  <div class="channel"><div class="ch-head"><h4>3. Schools / Academy partnerships</h4><span class="target">30</span></div><ul><li>Wat Pho · Suan Dusit · Tony & Guy Academy · vocational schools</li><li>Director conversations · placement pipeline</li></ul></div>
+  <div class="channel"><div class="ch-head"><h4>4. Founder warm referrals</h4><span class="target">30</span></div><ul><li>Personal asks from Sindhu + Alex + Moom networks</li><li>"Early partner" status with extra perks</li></ul></div>
+  <div class="channel"><div class="ch-head"><h4>5. Paid IG / FB / LINE Ads</h4><span class="target">30</span></div><ul><li>"Join Veyya - Earn ฿45-65k/month" landing page</li><li>Geo-fenced Bangkok · Thai language · ages 22-50</li><li>Budget: ฿30k for 8 weeks</li></ul></div>
+  <h3>Outreach script</h3>
+  <div class="card tight"><p><strong>Hook:</strong> "Earn ฿45-65k/month doing what you already do best - with full insurance, training, and a steady stream of customers."</p><p><strong>Value prop:</strong> "We bring vetted customers. You keep ~78% per booking. Weekly payouts. Free Veyya Academy training. Free professional headshots. Background-check paid."</p><p><strong>CTA:</strong> "15-min discovery call - no commitment."</p></div>
+  <h3>Activation playbook</h3>
+  <div class="card tight"><table><thead><tr><th>Day</th><th>Milestone</th></tr></thead><tbody><tr><td>0-3</td><td>Apply via LINE form · welcome call from Moom</td></tr><tr><td>4-7</td><td>Background check · Module 1 (Welcome)</td></tr><tr><td>7-10</td><td>Modules 2-3 (Service Standards · Customer Comms)</td></tr><tr><td>10-14</td><td>Module 4 + 5 + category module + practical</td></tr><tr><td>14</td><td><strong>Blue Badge issued.</strong> First 3 booking nudges within 7 days.</td></tr><tr><td>30</td><td>Performance review · Premium pathway opened if eligible</td></tr></tbody></table></div>
+  <h3>Weekly targets</h3>
+  <div class="card tight"><table><thead><tr><th>Week</th><th>Pipeline</th><th>Apps</th><th>Academy</th><th>Active</th></tr></thead><tbody>
+  <tr><td>Apr 27 - May 3</td><td>30</td><td>15</td><td>0</td><td>0</td></tr><tr><td>May 4 - May 10</td><td>60</td><td>30</td><td>10</td><td>0</td></tr><tr><td>May 11 - May 17</td><td>100</td><td>50</td><td>20</td><td>0</td></tr><tr><td>May 18 - May 24</td><td>150</td><td>75</td><td>35</td><td>5</td></tr><tr><td>May 25 - May 31</td><td>180</td><td>100</td><td>50</td><td>20</td></tr><tr><td>Jun 1 - Jun 7</td><td>200</td><td>120</td><td>65</td><td>30</td></tr><tr><td>Jun 8 - Jun 14</td><td>200</td><td>120</td><td>72</td><td>40</td></tr><tr><td>Jun 15 - Jun 21</td><td>200</td><td>120</td><td>75</td><td>45</td></tr><tr><td>Jun 22 - Jun 28</td><td>200</td><td>120</td><td>75</td><td>50</td></tr></tbody></table></div>
+  <h3>Investments</h3>
+  <div class="card tight"><table><thead><tr><th>Item</th><th>Spend</th></tr></thead><tbody>
+  <tr><td>Background checks · 90 × ฿500</td><td>฿45,000</td></tr><tr><td>Paid ads · 8 weeks</td><td>฿30,000</td></tr><tr><td>Provider referral incentive · 30 × ฿1,000</td><td>฿30,000</td></tr><tr><td>Welcome kit (apparel + bag) · 60 × ฿500</td><td>฿30,000</td></tr><tr><td>School partnership setup</td><td>฿20,000</td></tr><tr><td><strong>Total cash</strong></td><td><strong>฿155,000</strong></td></tr></tbody></table></div>
+</section>
+
+<section class="tab" data-tab="customer-acq">
+  <h2>Customer acquisition plan</h2>
+  <p class="src">Owner: Alex · Goal: 1,000 customers M1 (927 signups, 297 active).</p>
+  <h3>Funnel math</h3>
+  <div class="card tight"><table><thead><tr><th>Stage</th><th>Target M1</th><th>Conv.</th></tr></thead><tbody>
+  <tr><td>Awareness moments</td><td>~85,000</td><td>-</td></tr><tr><td>Site visits</td><td>~25,000</td><td>3% CTR</td></tr><tr><td>Customer signups</td><td>~927</td><td>~3.7%</td></tr><tr><td>Active (1+ booking)</td><td>~297</td><td>32%</td></tr><tr><td>Repeat (2+ bookings)</td><td>~120</td><td>40%</td></tr></tbody></table></div>
+  <h3>Channel mix - first 1,000</h3>
+  <div class="channel"><div class="ch-head"><h4>1. Warm 250 - founder networks</h4><span class="target">25%</span></div><ul><li>Founder LinkedIn launches · personal newsletters</li><li>Partnership intro doc to 50 Bangkok contacts</li><li>TOP_PROSPECTS list - 200 personal asks</li><li>Friends & family reactivation</li></ul></div>
+  <div class="channel"><div class="ch-head"><h4>2. Influencer 350 - 3 macro + 8 micro</h4><span class="target">35%</span></div><ul><li>3 macro (50k+) · ฿30-60k each + service swap</li><li>8 micro (5-30k) · service swap + ฿5-10k</li><li>3-week sequence per influencer · code "I[NAME]20"</li><li>Cost: ฿214k</li></ul></div>
+  <div class="channel"><div class="ch-head"><h4>3. Press 200 - top 6 outlets</h4><span class="target">20%</span></div><ul><li>Bangkok Post · Coconuts · BK Magazine · Time Out · Tatler · Esquire BKK</li><li>Founder ops angle · launch day PR Newswire</li><li>Cost: ฿30k</li></ul></div>
+  <div class="channel"><div class="ch-head"><h4>4. Paid 200 - Meta + LINE Ads</h4><span class="target">20%</span></div><ul><li>Geo-fenced 5 zones · behavioral targeting</li><li>฿50k/month test budget</li><li>Kill threshold: CAC > ฿300</li></ul></div>
+  <h3>Pre-launch waitlist (May-Jun)</h3>
+  <div class="card tight"><ul><li>Site goes public Jun 1 with countdown</li><li>"First 500 - founding member perks (3 free bookings)"</li><li>Refer-a-friend: refer 3 to skip 50 spots</li><li>Target: 500 by Jun 28 · 1,500 by Jul 1</li></ul></div>
+  <h3>Funnel KPIs</h3>
+  <div class="card tight"><table><thead><tr><th>Metric</th><th>Target</th></tr></thead><tbody>
+  <tr><td>Awareness → site visit</td><td>3% CTR</td></tr><tr><td>Site → signup</td><td>8%</td></tr><tr><td>Signup → first booking</td><td>30%</td></tr><tr><td>First → second booking</td><td>40%</td></tr><tr><td>30-day retention</td><td>50%</td></tr><tr><td>90-day retention</td><td>35%+</td></tr><tr><td>Blended CAC M1</td><td>≤ ฿315</td></tr><tr><td>Blended CAC M3</td><td>≤ ฿200</td></tr></tbody></table></div>
+  <h3>M1 spend</h3>
+  <div class="card tight"><table><thead><tr><th>Channel</th><th>Spend</th></tr></thead><tbody>
+  <tr><td>Influencer</td><td>฿214,000</td></tr><tr><td>Paid media</td><td>฿50,000</td></tr><tr><td>PR</td><td>฿30,000</td></tr><tr><td>Content production</td><td>฿20,000</td></tr><tr><td>Launch event (Jun 30)</td><td>฿120,000</td></tr><tr><td>Waitlist incentives</td><td>฿30,000</td></tr><tr><td><strong>Total</strong></td><td><strong>฿464,000</strong></td></tr></tbody></table></div>
+</section>
+
+<section class="tab" data-tab="marketing">
+  <h2>Marketing plan - the umbrella</h2>
+  <p class="src">Owner: Alex (with Sindhu on narrative). Sub-plans: Photography · Customer Acq · Social · Provider Acq.</p>
+  <h3>Positioning</h3>
+  <div class="card tight"><p><strong>Primary:</strong> "On-demand premium home, beauty, and wellness services - vetted, certified, on your schedule."</p><p style="margin-bottom:0"><strong>Secondary:</strong> "Bangkok's first AI-matched services marketplace - where care comes to you."</p></div>
+  <h3>Three messaging pillars</h3>
+  <div class="grid3">
+    <div class="principle"><div class="n">1</div><h4>Vetted & Certified</h4><p>Veyya Academy + background checks. Trust is the wedge competitors can't credibly claim.</p></div>
+    <div class="principle"><div class="n">2</div><h4>Care made convenient</h4><p>Premium service without leaving home. Time as a luxury.</p></div>
+    <div class="principle"><div class="n">3</div><h4>Real people, real expertise</h4><p>Showcase providers as professionals. Their craft, their pride, their earnings.</p></div>
+  </div>
+  <h3>Audience segments</h3>
+  <div class="card tight"><table><thead><tr><th>Segment</th><th>%</th><th>Profile</th><th>Hook</th></tr></thead><tbody>
+  <tr><td>Primary</td><td>45%</td><td>Bangkok working women 28-50, expat + Thai, time-pressed</td><td>"Skip the salon traffic."</td></tr><tr><td>Secondary</td><td>30%</td><td>Couples & families with disposable income, 30-55</td><td>"Bring the spa home."</td></tr><tr><td>Tertiary</td><td>25%</td><td>Self-care enthusiasts, wellness-focused</td><td>"Your weekly wellness ritual."</td></tr></tbody></table></div>
+  <h3>Launch campaign - "Care, where you are"</h3>
+  <div class="card tight"><ul><li><strong>Hero film (60-sec):</strong> 4-week pre-launch teaser. Real provider, real customer.</li><li><strong>"Founder talks" series (3 × 90-sec):</strong> Sindhu, Alex, provider story.</li><li><strong>"Day in the life" series (3 episodes):</strong> One per service category. TikTok / Reels native.</li><li><strong>Pre-launch waitlist landing page</strong> with countdown.</li></ul></div>
+  <h3>Launch event - Jun 30</h3>
+  <div class="card tight"><ul><li>60 guests: providers (20) + early customers (20) + press (10) + partners (10)</li><li>Bangkok Sukhumvit / Sathorn · Thai-modern aesthetic · ฿80-100k venue</li><li>Founder talks → live Veyya service demos → seated dinner → press kit</li><li>Cost: ฿120k all-in · Embargo lifts 9am Tue Jul 1</li></ul></div>
+  <h3>Marketing site Phase 1</h3>
+  <div class="card tight"><h4>Sections</h4><ul><li>Hero (rotating service categories)</li><li>How it works (4-step)</li><li>Service categories (Phase 1: 9 services)</li><li>Veyya Academy explainer</li><li>Provider stories</li><li>Founder narrative</li><li>Pricing transparency · FAQ · LINE OA + email signup</li></ul><h4>Timeline</h4><ul><li>May 17: Phase 1 (private) review</li><li>Jun 1: Public launch with waitlist</li><li>Jul 1: Bookings live</li></ul></div>
+  <h3>SEO + content</h3>
+  <div class="card tight"><ul><li><strong>Pillar content:</strong> "Best Bangkok at-home services" · "How to choose a vetted Bangkok masseuse" · "What 'professional cleaning' should look like in 2026"</li><li><strong>Long-form blog:</strong> 1 post / week · LINE OA newsletter weekly · Customer stories monthly</li><li><strong>Target:</strong> Page 1 ranking for top 20 commercial keywords by Q4</li></ul></div>
+  <h3>Marketing KPIs</h3>
+  <div class="grid4"><div class="kpi"><div class="num">500+</div><div class="lab">Pre-launch waitlist</div></div><div class="kpi"><div class="num">8+</div><div class="lab">Press hits launch month</div></div><div class="kpi"><div class="num">25k</div><div class="lab">Web visitors M1</div></div><div class="kpi"><div class="num">8%</div><div class="lab">Site → signup</div></div></div>
+</section>
+
+<section class="tab" data-tab="social">
+  <h2>Social media plan</h2>
+  <p class="src">Owner: Alex (with freelance social media manager - hired by May 10).</p>
+  <h3>Channel-by-channel</h3>
+  <div class="channel"><div class="ch-head"><h4>Instagram</h4><span class="target">4k Jul · 12k Sep</span></div><ul><li>1 post / day (image + reel) + 3-5 stories / day</li><li>Pillars: Provider 40% · Service 30% · Journey 15% · BTS 15%</li><li>Reels: weekly before/after + monthly day-in-life</li></ul></div>
+  <div class="channel"><div class="ch-head"><h4>TikTok</h4><span class="target">2.5k Jul · 8k Sep</span></div><ul><li>3-4 videos / week · 9:16 vertical, native sound, captions Thai + English</li><li>Quick service explainers · myth-busting · founder · trending sounds</li></ul></div>
+  <div class="channel"><div class="ch-head"><h4>LINE OA</h4><span class="target">3k Jul · 10k Sep</span></div><ul><li>Weekly Tuesday newsletter + push for major moments</li><li>Carousel cards · rich messages · 1-tap booking links</li><li><strong>Highest-converting Thai channel</strong></li></ul></div>
+  <div class="channel"><div class="ch-head"><h4>LinkedIn (founder + B2B)</h4><span class="target">Industry voice</span></div><ul><li>Sindhu 1x/wk · Alex 1x/wk</li><li>Industry credibility · B2B pipeline · fundraise prep</li></ul></div>
+  <div class="channel"><div class="ch-head"><h4>Facebook (Thai community)</h4><span class="target">Critical for Thai market</span></div><ul><li>2-3 posts / week (cross-post from IG)</li><li>Community group engagement · drive Facebook reviews</li></ul></div>
+  <h3>Content production</h3>
+  <div class="card tight"><ul><li>60% from photography library (rotated/recropped per channel)</li><li>20% provider-generated (templates + brand kit)</li><li>10% customer testimonial videos</li><li>10% founder content (bi-weekly direct-to-camera)</li></ul></div>
+  <h3>Paid amplification</h3>
+  <div class="card tight"><table><thead><tr><th>Platform</th><th>M1 Budget</th></tr></thead><tbody>
+  <tr><td>IG / FB Ads</td><td>฿30,000</td></tr><tr><td>LINE Ads</td><td>฿20,000</td></tr><tr><td>TikTok Ads</td><td>฿0 (organic only M1-M2)</td></tr><tr><td><strong>Total</strong></td><td><strong>฿50,000</strong></td></tr></tbody></table></div>
+  <h3>Community management</h3>
+  <div class="card tight"><ul><li>Response SLA: ≤ 2 hours during 8am-10pm BKK (DMs + comments)</li><li>Owner: social media manager M-F · Alex / Moom evenings + weekends</li><li>DMs needing booking → handoff to LINE OA + concierge within 5 min</li></ul></div>
+  <h3>Tools + hire</h3>
+  <div class="card tight"><ul><li>Buffer or Later (฿1k/mo) · Canva Pro</li><li>Photography library in shared GDrive / Notion</li><li><strong>Freelance social media manager · 10 hrs / week · ฿15-25k / month · target hire date May 10</strong></li></ul></div>
+  <h3>Social KPIs</h3>
+  <div class="card tight"><table><thead><tr><th>Metric</th><th>End Jul</th><th>End Sep</th><th>End Dec</th></tr></thead><tbody>
+  <tr><td>IG followers</td><td>4,000</td><td>12,000</td><td>30,000</td></tr><tr><td>TikTok followers</td><td>2,500</td><td>8,000</td><td>25,000</td></tr><tr><td>LINE OA followers</td><td>3,000</td><td>10,000</td><td>25,000</td></tr><tr><td>FB followers</td><td>2,000</td><td>6,000</td><td>15,000</td></tr><tr><td>LinkedIn (founders combined)</td><td>+500</td><td>+1,500</td><td>+3,000</td></tr><tr><td>Avg eng. rate IG</td><td>3%+</td><td>4%+</td><td>5%+</td></tr><tr><td>Social → signup attribution</td><td>15%</td><td>20%</td><td>25%</td></tr></tbody></table></div>
+</section>
+
+<section class="tab" data-tab="city2">
+  <h2>City 2 gate - Jan 1, 2027</h2>
+  <p>Per CLAUDE.md, gate is "Q2 2026 (Month 6 or KPI gate, whichever first)." With Jul 1 launch, Month 6 is Jan 1, 2027.</p>
+  <h3>Gate criteria - must hit ALL or 4 of 5</h3>
+  <div class="card tight"><table><thead><tr><th>#</th><th>Criterion</th><th>Target</th><th>Why</th></tr></thead><tbody>
+  <tr><td>1</td><td>Active customers</td><td>5,000+</td><td>Density to validate frequency</td></tr><tr><td>2</td><td>Active providers (4.7+ rating, 93%+ on-time)</td><td>150+</td><td>Quality bar held</td></tr><tr><td>3</td><td>Provider weekly utilization</td><td>70%+</td><td>Provider economics work without subsidy</td></tr><tr><td>4</td><td>Bangkok unit-positive city P&L</td><td>≥ break-even</td><td>City 2 won't fix City 1 economics</td></tr><tr><td>5</td><td>City 2 ops playbook + entity scoped</td><td>Documented</td><td>Can't ship what isn't written down</td></tr></tbody></table></div>
+  <h3>Candidates</h3>
+  <div class="grid3">
+    <div class="card tight"><h4 style="margin-top:0">Phuket</h4><p><strong>Why:</strong> tourism + expat density, premium AOV.</p><p><strong>Watch:</strong> seasonality, transient base.</p></div>
+    <div class="card tight"><h4 style="margin-top:0">Chiang Mai</h4><p><strong>Why:</strong> digital nomads, lower ops cost.</p><p><strong>Watch:</strong> AOV likely lower.</p></div>
+    <div class="card tight"><h4 style="margin-top:0">Dubai</h4><p><strong>Why:</strong> Gulf strategic, Sindhu's geography, premium AOV.</p><p><strong>Watch:</strong> different legal entity, longer ramp.</p></div>
+  </div>
+  <h3>Pre-gate work</h3>
+  <ul><li>Sep: DD trips Phuket + Chiang Mai (1 week each)</li><li>Oct: Dubai DD</li><li>Nov: city-by-city ops playbook draft</li><li>Dec: capital plan, runway impact, board pre-read by Dec 18</li></ul>
+</section>
+
+<section class="tab" data-tab="cadence">
+  <h2>Cadence & governance</h2>
+  <h3>Daily</h3>
+  <div class="card tight"><ul><li><strong>9:00 BKK · 15-min ops huddle</strong> - Sindhu + Alex + Moom</li><li>Async standup in ClickUp by 10am</li><li>Launch week: add 6:00 PM end-of-day check-in</li></ul></div>
+  <h3>Weekly</h3>
+  <div class="card tight"><table><thead><tr><th>Day</th><th>Time</th><th>Meeting</th><th>Owner</th></tr></thead><tbody>
+  <tr><td>Mon</td><td>10:00</td><td>Sprint review · blockers · risk</td><td>Sindhu</td></tr><tr><td>Wed</td><td>16:00</td><td>Demand & supply review</td><td>Alex</td></tr><tr><td>Thu</td><td>14:00</td><td>Product & design walkthrough</td><td>Sindhu</td></tr><tr><td>Fri</td><td>15:00</td><td>Financial close · KPI scorecard</td><td>Sindhu</td></tr></tbody></table></div>
+  <h3>Monthly</h3>
+  <div class="card tight"><ul><li><strong>First Mon:</strong> co-founder + regional partner offsite + monthly OKR review</li><li><strong>Mid-month:</strong> provider quality review</li><li><strong>Last Friday:</strong> investor / advisor written update</li></ul></div>
+  <h3>Decision log</h3>
+  <div class="rule">All non-trivial decisions go to <code>/decisions/YYYY-MM-DD-decision-name.md</code>. Top 8: Photography budget tier · Photographer · Bank · Insurance carrier · Tier names · Referral rewards · Launch event format · Academy Lead.</div>
+  <h3>Communications matrix</h3>
+  <div class="card tight"><table><thead><tr><th>Audience</th><th>Channel</th><th>Cadence</th><th>Owner</th></tr></thead><tbody>
+  <tr><td>Internal</td><td>ClickUp + LINE</td><td>Daily / weekly</td><td>Sindhu</td></tr><tr><td>Providers</td><td>LINE OA</td><td>Weekly Friday</td><td>Moom</td></tr><tr><td>Customers</td><td>LINE OA + email</td><td>Weekly Tuesday</td><td>Alex</td></tr><tr><td>Investors</td><td>Email memo</td><td>Monthly + on milestone</td><td>Sindhu</td></tr><tr><td>Press / partners</td><td>Direct + newsletter</td><td>On milestone</td><td>Alex</td></tr></tbody></table></div>
+</section>
+
+<footer class="foot">
+  Veyya Operations Plan · Saved Apr 26, 2026 · Source: lab.thebigred.io/veyya/progress reconciled with CLAUDE.md, MEMORY.md, brand kit. Refresh weekly during pre-launch, daily during launch week.
+</footer>
+
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('.tabbtn');
+  const sections = document.querySelectorAll('section.tab');
+  buttons.forEach(btn => btn.addEventListener('click', () => {
+    const t = btn.dataset.tab;
+    buttons.forEach(b => b.classList.toggle('active', b === btn));
+    sections.forEach(s => s.classList.toggle('active', s.dataset.tab === t));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }));
+  function days(toIso) {
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const target = new Date(toIso + 'T00:00:00');
+    const ms = target - today;
+    return Math.round(ms / 86400000);
+  }
+  document.getElementById('cd-web').firstChild.textContent = days('2026-07-01') + ' ';
+  document.getElementById('cd-mob').firstChild.textContent = days('2026-09-01') + ' ';
+  document.getElementById('cd-c2').firstChild.textContent = days('2027-01-01') + ' ';
+</script>
+</body>
+</html>
